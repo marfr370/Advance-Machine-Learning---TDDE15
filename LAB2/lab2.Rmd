@@ -1,0 +1,205 @@
+---
+title: "TDDE15 - Lab 2"
+author: Martin Friberg - marfr370
+date: "2021/09/20"
+output:
+  pdf_document:
+    fig_caption: true
+    number_sections: true
+    latex_engine: xelatex
+
+  html_document:
+    df_print: paged
+header-includes:
+  - \usepackage{caption}
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
+---
+```{r setup, include=FALSE, echo=FALSE, results='hide',message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+library(knitr)
+library(kableExtra)
+```
+
+```{r, code=readLines("Lab2.R"), echo=FALSE, eval=TRUE, results='hide', message=FALSE, warning=FALSE }
+```
+
+# Lab introduction {-}
+
+Build a hidden Markov model (HMM) for a scenario when we have a robot that walks around a ring. The ring is divided into 10 sectors. The robot is equipped with a tracking device that you can access. The device is not very accurate though: If the robot is in the sector i, then the device will report that the robot is in the sectors [i − 2, i + 2] with equal probability. At any given time point, the robot is in one of the sectors and decides with equal probability to stay in that sector or move to the next sector. You do not have direct observation of the robot.
+
+
+# Assignment 1 {-}
+
+Build the hidden Markov model (HMM) for the scenario
+
+
+```{r , results='hide', message=FALSE, warning=FALSE, echo=FALSE}
+library(HMM)
+library(kableExtra)
+library(knitr)
+options(digits=2)
+library(ggplot2)
+```
+
+The hidden markov model (HMM) was constructed by using the HMM library together with settings:
+
+- States to S: 0-9,
+- Observations to S: 0-9, 
+- Equal starting probability for all the states, i.e 0.1, 
+- A transition matrix corresponding to that the robot might move one state or forward or stay in the current state with equal probability,
+- An emission matrix corresponding to where the signal might come from given the true state. If the robot is in state i, the signal might come from state [i-2, i+2] with equal probability (0.2).
+
+The HMM model was then initialized with the initHMM function where the arguments were applied. 
+
+# Assignment 2-5 {-}
+
+The HMM model was simulated for a 100 time steps. This was done a 100 times in order to get good estimates of the different algorithms: 
+ 
+- filtered 
+- smoothed 
+- viterbi
+
+From the values obtained by the simulation, the observations were used, but the hidden states were discarded from future calculations. 
+
+The forward and backward algorithms are used in order to obtain alpha and beta, which in their turn are used in order to calculate the filtered and smoothed probability distributions. 
+
+## The forward algorithm: {-}
+
+
+$\alpha(z^0) := p(x^0|z^0)p(z^0)$
+
+$\text{For } t=1,..,T \text{ do}$ 
+
+- $\alpha(z^t) := p(x^t|z^t)\sum_{z^{t-1}}{\alpha(z^{t-1}) p(z^t|z^{t-1})}$
+
+
+$\text{Return } \alpha(z^0) ,.., \alpha(z^T)$
+
+
+## The backward algorithm: {-}
+
+ 
+$\beta(z^T) := 1$ 
+
+$\text{For } t=T-1,..,0 \text{ do}$
+
+- $\beta(z^t) := \sum_{z^{t+1}}\beta(z^{t+1})p(x^{t+1}|z^{t+1})p(z^{t+1}|z^t)$
+
+$\text{Return } \beta(z^0) ,.., \beta(z^T)$
+
+The values returned from the forward and backward algorithms in R are in log scale. Therefore, the alpha and beta values returned were then exponentialized by the function exp(value). 
+
+
+## Filtering {-}
+
+The Filtering algorithm is used in order to answer the question "Where was is the robot at time t?". The question we are trying to answer can be further explained by saying that we have observed all emission signals up to the time point t and are trying to predict what the most likely state is at time t. By using the forward algorithm we discard all the emission signals from time t+1 up until time T.  $p(z^t|x^{0:t})$ 
+
+
+The filtering probabilities were the attained by the function: 
+
+$p(z^t)|x^{0:t}) = \frac{\alpha(z^t)} {\sum_{z^t} \alpha(z^t)}$
+
+## Smoothing {-}
+
+By using the backward algorithm we are trying to answer the question "Where was the robot at time t". By using the smoothed algorithm we take into consideration all emission signals from time 0-T. The equation we are trying to answer is therefore $p(z^t|x^{0:T})$
+
+The smoothing probabilities were the attained by the function:
+
+$p(z^t|x^{0:T}) = \frac{\alpha(z^t) \beta(z^T)} {\sum_{z^t} \alpha(z^t) \beta(z^t)}$
+
+## Viterbi algorithm {-}
+
+The result from the Viterbi algorithm answers the question "Which is the most likely path that the robot took". This means that the algorithm isn't trying to estimate the probability of the robot being in a state at time t, but instead is measuring the entire probability chain. $z_{max}^{0:T} = argmax_{z^{0:T}} p(z^{0:T}|x^{0:T})$
+
+$w(z^0) := \text{log }p(z^0) + \text{log } p(x^0|z^0)$
+
+$\text{For } t = 0,.,T-1 \text{ do}$
+
+- $w(z^{t+1} := \text{log } p(x^{t+1}|z^{t+1}) + \text{max}_{z^t}[\text{log }p(z^{t+1}|z^t) + w(z^t)]$
+
+- $\psi(z^{t+1}) := \text{argmax}_{z^t}[\text{log }p(z^{t+1}|z^t) + w(z^t)$
+
+$z^t_{max} = \text{argmax}_{z^T} \text{ } w(z^t)$
+
+$\text{For } t=T-1,..,0 \text{ do}$
+
+- $z^t_{max} := \psi(z_{max}^{t+1})$
+
+$\text{Return } z_{max}^{0:T}$
+
+## Results {-}
+
+To measure the accuracy of predictions from the algorithms, the misclassification rate was used. By simulating the hidden markov model a hundred times, good estimates of the accuracy of the algorithms was obtained. 
+
+The predictions made by the filtered and smoothing algorithms were calculated by taking the state with the highest probability in each time step. These states were the compared to the hidden states from the simulation in order to calculate the misclassification rate for the time series. For the viterbi algorithm, the viterbi function from the package HMM was used, which returns the most likely path the robot has taken. To give an illustration, the confusion matrices for the different algorithms given one simulation of the hidden markov model is shown below. 
+
+```{r, echo=FALSE, fig.show="H", out.width="33%"}
+filter_confmatr
+
+smooth_confmatr
+
+viterbi_confmatr
+```
+
+As can be seen from the confusion matrices, most of the misclassifications from the algorithms are due to that the algorithm predicts the robot to be in a neighboring state of the actual hidden state. Even though these confusion matrices are based on a single simulation, hints about the excellence of the smoothing algorithm compared to the others can be drawn. 
+
+## Comparison of algorithms {-}
+
+To gain further insight into the performance of the algorithms, the misclassification rate for each of the algorithms was calculated and averaged over 100 simulations. The results are shown in the graph below. 
+
+```{r plot, echo=FALSE}
+misclass_plot
+```
+
+### In general, the smoothed distributions should be more accurate than the filtered distributions and the most probable paths. Why? {-}
+
+The smoothing distribution indeed seems to be more accurate than the filtered distribution and the most probable path. This is due to the fact that the smoothing distribution uses all the observations from time steps 1-100 for both the forward and backward algorithms in order to predict with what probability the robot was in state x at time t. In comparison, the filtered algorithm only takes into consideration all the observations up until the given time. For example, if the probability for the given states are to be calculated at time 50, the filtered distribution only takes observations up until time 50 into consideration. The Viterbi distribution (the most probable path) do not use only the probability distribution at a certain time step, but also has to construct a path that coincides with the movement patterns of the robot. In our scenario, this generates a poorer prediction result that the other distributions can manage to provide. 
+
+
+
+# Assignment 6 {-}
+
+Is it always true that the later in time (i.e., the more observations you have received) the better you know where the robot is ?
+
+## Shannon entropy {-}
+
+The Shannon entropy calculates how much information that we receive from observing an outcome. The less likely the outcome is, the more information we receive. A simplified example of calculating the entropy in bits is how many true and false questions it would take to know the outcome. For each question, the entropy increases by 1 bit. This is due to the fact that 1 bit can represent 2 facts (0 or 1). For a coin toss, the minimum surprise (minimum entropy) would be if the probability for heads was 1 and for tails 0 or vice versa, since we know the outcome beforehand. The maximum entropy on the other hand would be if the probability of heads and tails were equal. 
+
+In our case the entropy decreases when the probability distribution between the states become more concentrated, i.e the information we receive by observing each state decreases. 
+
+To calculate whether or not the knowledge of the location of the robot increases for every time step, the filtered distribution was simulated a hundred times and the Shannon entropy at each time step was averaged over the simulations. This generated the following plot. 
+
+```{r, echo=FALSE}
+entropy_plot
+```
+
+As can be seen from the plot, the entropy decreases during the first 4 time steps but stagnates thereafter and only fluctuates. The interpretation of this is that we become more sure of the location of the robot during the first 4 time steps but that we gain no further knowledge after that. The Shannon entropy fluctuates a lot which is due to the fact that depending on what state the emission signals in subsequent time steps are. 
+
+
+# Assignment 7 {-}
+
+Compute the probabilities of the hidden states for the time step 101.
+
+In order to compute the probabilities of the hidden states for the following time steps, the probabilities of the observations in the current time steps must be multiplied with the transition matrix. This means that $p(SX_{t+1}) = p(SX_t) *0.5 + p(SX_{t-1})*0.5$.
+
+In our case, the probability of the robot being in a hidden state at time t (100) is
+
+```{r, echo=FALSE}
+filtered[,100]
+```
+
+The transition matrix then gives us the probability of the robot being in a certain state at time t+1 (101)
+
+```{r lab2, echo=FALSE}
+state_101
+```
+
+
+# Code {-}
+
+```{r, code=readLines("Lab2.R"), echo=TRUE, eval=FALSE}
+```
+
+

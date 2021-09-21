@@ -5,10 +5,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ```
 
 
-```{r, code=readLines("LAB2/Lab2.R"), echo=FALSE, eval=TRUE, results='hide', message=FALSE, warning=FALSE }
-```
-
-```{r, code=readLines("LAB1/Lab1.R"), echo=FALSE, eval=TRUE, results='hide', message=FALSE, warning=FALSE }
+```{r, code=readLines("Lab1.R"), echo=FALSE, eval=TRUE, results='hide', message=FALSE, warning=FALSE }
 ```
 
 ## Lab 1 - Graphical Models

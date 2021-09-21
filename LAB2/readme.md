@@ -40,7 +40,7 @@ The predictions made by the filtered and smoothing algorithms were calculated by
 
 To give an illustration, the confusion matrices for the different algorithms given one simulation of the hidden markov model is shown below. 
 
-<img src="figure/unnamed-chunk-1-1.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="33%" /><img src="figure/unnamed-chunk-1-2.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="33%" /><img src="figure/unnamed-chunk-1-3.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="33%" />
+<img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="33%" /><img src="figure/unnamed-chunk-2-2.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="33%" /><img src="figure/unnamed-chunk-2-3.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="33%" />
 
 ### Comparison of algorithms {-}
 
@@ -56,7 +56,7 @@ The smoothing distribution indeed seems to be more accurate than the filtered di
 ### Shannon entropy {-}
 
 
-<img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="50%" style="display: block; margin: auto;" />
+<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="50%" style="display: block; margin: auto;" />
 
 As can be seen from the plot, the entropy decreases during the first 4 time steps but stagnates thereafter and only fluctuates. The interpretation of this is that we become more sure of the location of the robot during the first 4 time steps but that we gain no further knowledge after that. The Shannon entropy fluctuates a lot which is due to the fact that depending on what state the emission signals in subsequent time steps are. 
 
@@ -70,12 +70,12 @@ In our case, the probability of the robot being in a hidden state at time t (100
 
 
 ```
-##  [1] 0.00 0.00 0.00 0.00 0.00 0.00 0.35 0.65 0.00 0.00
+##  [1] 0.000 0.000 0.091 0.318 0.409 0.182 0.000 0.000 0.000 0.000
 ```
 
 The transition matrix then gives us the probability of the robot being in a certain state at time t+1 (101)
 
 
 ```
-##  [1] 0.00 0.00 0.00 0.00 0.00 0.00 0.17 0.50 0.33 0.00
+##  [1] 0.000 0.000 0.045 0.205 0.364 0.295 0.091 0.000 0.000 0.000
 ```

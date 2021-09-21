@@ -1,5 +1,12 @@
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd('/Users/martinfriberg/Desktop/ML_PROJECTS/Advance-Machine-Learning-TDDE15'
+)
 
 knit(input="readme.rmd", output = "readme.md")
-knit(input="LAB1/readme.rmd", output = "LAB1/readme.md")
-knit(input="LAB2/readme.rmd", output = "LAB2/readme.md")
+
+setwd('/Users/martinfriberg/Desktop/ML_PROJECTS/Advance-Machine-Learning-TDDE15/LAB1'
+)
+knit(input="readme.rmd", output = "readme.md")
+
+setwd('/Users/martinfriberg/Desktop/ML_PROJECTS/Advance-Machine-Learning-TDDE15/LAB2'
+)
+knit(input="readme.rmd", output = "readme.md")

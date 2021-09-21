@@ -6,7 +6,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 ```
 
-
+```{r, code=readLines("Lab2.R"), echo=FALSE, eval=TRUE, results='hide', message=FALSE, warning=FALSE }
+```
 
 
 ## Lab 2 - Hidden Markov Models

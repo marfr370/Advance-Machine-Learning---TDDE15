@@ -3,8 +3,6 @@
 
 
 
-
-
 ## Lab 1 - Graphical Models
 
 The first lab is about **Graphical Models** and brings up concepts such as

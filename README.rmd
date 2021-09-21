@@ -3,6 +3,8 @@ header-includes:
   - \usepackage{caption}
   - \usepackage{float}
   - \floatplacement{figure}{H}
+output: github_document
+bibliography: "references.bib"
 ---
 
 # Advance-Machine-Learning-TDDE15

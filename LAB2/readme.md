@@ -7,6 +7,8 @@
 
 ## Lab 2 - Hidden Markov Models
 
+More information on procedures in the code or the pdf file.
+
 ### Lab introduction {-}
 
 Build a hidden Markov model (HMM) for a scenario when we have a robot that walks around a ring. The ring is divided into 10 sectors. The robot is equipped with a tracking device that you can access. The device is not very accurate though: If the robot is in the sector i, then the device will report that the robot is in the sectors [i − 2, i + 2] with equal probability. At any given time point, the robot is in one of the sectors and decides with equal probability to stay in that sector or move to the next sector. You do not have direct observation of the robot.

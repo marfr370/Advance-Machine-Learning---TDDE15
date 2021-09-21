@@ -5,6 +5,8 @@
 
 ## Lab 1 - Graphical Models
 
+More information on procedures in the code or the pdf file.
+
 The first lab is about **Graphical Models** and brings up concepts such as
 
 - Equality between graphs by determining if they have the same adjacencies and unshielded colliders
